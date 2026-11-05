@@ -1,1 +1,9 @@
 nova-live.sh
+.omc/
+
+# ⚠️ ESTE REPO É PÚBLICO — ele é servido como github.io/ir/.
+# O casador LÊ a agenda do salão (nome, telefone, valor, quem pagou sinal) e
+# assina o crachá de dona. Nada disso pode ser servido numa URL pública, nem
+# como código: ele conta onde o dado mora e como se pede. Ele roda só aqui.
+casador/
+
