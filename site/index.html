@@ -4,18 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>Abrindo o site…</title>
+<title>Abrindo o agendamento…</title>
 <!--
   ═══════════════════════════════════════════════════════════════════════════
   O REDIRECIONADOR DO SITE — irmão do `/ir/`, com OUTRO destino.
 
   `/ir/`       → WhatsApp do salão (combo presencial, R$ 279,90)
-  `/ir/site/`  → a LOJA, já na página do Kit de Progressiva  ← este aqui
+  `/ir/site/`  → o SITE DE AGENDAMENTO, na etapa da progressiva  ← este aqui
 
   Ela pediu isso com a live no ar (05/11/2026): o botão da live deixa de
-  mandar pro WhatsApp e passa a abrir o site direto na progressiva, sem
-  perder a medição. A home não serve: o primeiro quadro dela é o banner da
-  linha PRO, e quem cai ali precisa ROLAR pra achar a Black Friday.
+  mandar pro WhatsApp e passa a abrir o AGENDAMENTO, já na progressiva, sem
+  perder a medição. ⚠️ Site de agendamento, NÃO a loja de produto — a live
+  vende o combo presencial de R$ 279,90, que se fecha agendando.
 
   ── AS MESMAS DECISÕES DO IRMÃO, PRA NINGUÉM DESFAZER SEM SABER ───────────
 
@@ -25,12 +25,9 @@
   ⚠️ O DESTINO É FIXO NO CÓDIGO, não vem por parâmetro — aceitar `?para=`
      criaria um redirecionador aberto. A URL só escolhe a ETIQUETA.
 
-  ⚠️ A ETIQUETA VIAJA PRO SITE TAMBÉM. Aqui ela é remontada na URL de
-     destino (`utm_source`/`utm_medium`/`utm_campaign`), porque o rastro não
-     pode morrer na porta da loja: é por ela que o `rastro.js`/GTM vai saber
-     de onde veio a compra. Medido em 02/11: a loja NÃO limpa nem redireciona
-     a query. ⚠️ Enquanto o GTM não entrar (Nuvemshop desativou «códigos
-     externos» em 03/03/2024), a etapa da loja é «não medimos», nunca 0.
+  ⚠️ A ETIQUETA VIAJA PRO DESTINO TAMBÉM, em `origem` (o campo que a própria
+     agenda já lê, como no `?origem=instagram-bio` do link da bio) e nas UTMs.
+     O rastro não pode morrer na porta do agendamento.
 
   ⚠️ DOIS PINGS, NÃO UM: `origem` = abriu esta página; `clique` = o pulo pro
      site foi disparado. A diferença é quem abriu e não chegou.
@@ -82,14 +79,14 @@
   <div class="caixa">
     <div class="rodinha" aria-hidden="true"></div>
     <div class="selo">Black Friday</div>
-    <h1>Abrindo o site…</h1>
+    <h1>Abrindo o agendamento…</h1>
     <p>Se não abrir sozinho em 2 segundos, toque no botão.</p>
-    <a class="botao" id="ir" href="#" rel="nofollow noopener">Ver o Kit de Progressiva</a>
+    <a class="botao" id="ir" href="#" rel="nofollow noopener">Agende em 1 minuto!</a>
   </div>
 
 <noscript>
   <!-- sem JS não há ping nenhum; melhor a cliente chegar do que a gente medir -->
-  <meta http-equiv="refresh" content="0;url=https://www.lavoutaliso.com.br/produtos/kit-de-progressiva-lavou-ta-liso-1l/">
+  <meta http-equiv="refresh" content="0;url=https://agendeaquilavoutaliso.netlify.app/">
 </noscript>
 
 <script>
@@ -97,9 +94,12 @@
   'use strict';
 
   /* ⭐ O DESTINO. Fixo aqui, nunca por parâmetro — ver a nota do cabeçalho.
-     É a página do Kit de Progressiva, que já abre com o preço de Black
-     Friday cortado. A HOME não serve: abre no banner da linha PRO. */
-  var BASE = 'https://www.lavoutaliso.com.br/produtos/kit-de-progressiva-lavou-ta-liso-1l/';
+     É o SITE DE AGENDAMENTO do salão, não a loja de produto: a live vende o
+     combo presencial (progressiva + pré-química + diagnóstico + kit) por
+     R$ 279,90, que se fecha agendando, não comprando frasco.
+     ⚠️ Corrigido em 05/11/2026: por 20 min este link apontou pro Kit de
+        Progressiva da loja — destino errado, ela viu e mandou trocar. */
+  var BASE = 'https://agendeaquilavoutaliso.netlify.app/';
 
   var PING = 'https://lailasalon-consultoria.netlify.app/api/visita';
   var CHAVE_VID = 'lala.vid';
@@ -120,9 +120,12 @@
   } catch (e) { et = ''; }
 
   /* ⚠️ Sem etiqueta não se inventa uma: clique sem etiqueta não se sabe de
-     qual criativo veio. Vai pro site sem contar e sem carimbar UTM. */
+     qual criativo veio. Vai pro agendamento sem contar e sem carimbar etiqueta. */
+  /* `origem` é o campo que a PRÓPRIA agenda lê (ela já usa `instagram-bio`
+     no link da bio). As UTMs vão junto pro resto do rastro. */
   var DESTINO = et
-    ? BASE + '?utm_source=' + encodeURIComponent(et)
+    ? BASE + '?origem=' + encodeURIComponent(et)
+           + '&utm_source=' + encodeURIComponent(et)
            + '&utm_medium=live&utm_campaign=' + encodeURIComponent(et)
     : BASE;
 
@@ -156,7 +159,7 @@
     try {
       fetch(PING, { method: 'POST', keepalive: true,
         headers: { 'content-type': 'text/plain' }, body: corpo }).catch(function () {});
-    } catch (e) { /* medir não pode travar a ida pro site */ }
+    } catch (e) { /* medir não pode travar a ida pro agendamento */ }
     return false;
   }
 
@@ -168,7 +171,7 @@
   }
 
   /* `origem` = abriu esta página (tocou no link da live)
-     `clique` = saiu pro site */
+     `clique` = saiu pro agendamento */
   var ok1 = ping('origem');
   var ok2 = ping('clique');
 
