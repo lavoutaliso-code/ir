@@ -198,8 +198,16 @@
     window.__ir = { et: et, vid: vid, destino: DESTINO, robo: ehRobo, pings: ['origem', 'clique'] };
   } catch (e) {}
 
-  /* rede de segurança: se o replace não rolar, tenta de novo */
-  setTimeout(function () { if (location.hostname.indexOf('github.io') >= 0) location.href = DESTINO; }, 2500);
+  /* rede de segurança: se o `replace` não rolar, tenta de novo.
+     ⚠️ MEDIDO EM 07/11/2026: nos irmãos esta linha testava
+        `location.hostname.indexOf('github.io')`, e isso virou LETRA MORTA —
+        o Pages ganhou o domínio próprio `lailasalon.com.br`, então
+        `lavoutaliso-code.github.io/ir/...` responde 301 e a página roda
+        hospedada em OUTRO hostname. A condição nunca mais foi verdadeira.
+        Aqui a rede olha o que importa: continuamos nesta página? */
+  setTimeout(function () {
+    if (location.href.indexOf('/ir/loja/') >= 0) location.href = DESTINO;
+  }, 2500);
 })();
 </script>
 </body>
